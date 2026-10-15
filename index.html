@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jesús te ama</title>
+<style>
+/* Una sola pantalla: texto blanco sobre negro, centrado. Solo el nombre se mueve; "Jesús te ama" queda anclado. */
+:root {
+  --bg: #000000;
+  --fg: #ffffff;
+  --fg-soft: rgba(255, 255, 255, 0.55);
+  --fg-faint: rgba(255, 255, 255, 0.32);
+  --fg-faint-hover: rgba(255, 255, 255, 0.7);
+  --font: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --size-hero: clamp(2.2rem, 6vw, 5rem);
+  --fade: 0.9s;
+  color-scheme: dark;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  padding-block: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+h1 {
+  position: relative;
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.3em;
+  font-size: var(--size-hero);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+/* Caja de ancho fijo: el nombre cambia dentro de ella y la frase fija no se desplaza. */
+#nombre-caja {
+  display: flex;
+  justify-content: flex-end;
+  flex: none;
+  width: var(--name-w, auto);
+  white-space: nowrap;
+}
+
+#nombre {
+  display: inline-block;
+  font-weight: 300;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--fade) ease, transform var(--fade) ease;
+  will-change: opacity, transform;
+}
+
+#nombre.sale {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+#nombre.entra {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: none;
+}
+
+.fijo {
+  flex: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Pantallas angostas: el nombre va arriba y la frase fija debajo, ambos centrados. */
+h1.apilado {
+  flex-direction: column;
+  align-items: center;
+  row-gap: 0.1em;
+}
+
+h1.apilado #nombre-caja {
+  width: auto;
+  justify-content: center;
+}
+
+.medidor {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  font-weight: 300;
+}
+
+.sub {
+  margin: 0;
+  max-width: 340px;
+  font-size: 0.85rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--fg-soft);
+  text-wrap: balance;
+}
+
+.mas {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--fg-faint);
+  text-wrap: balance;
+}
+
+.mas a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.4s ease;
+}
+
+.mas a:hover,
+.mas a:focus-visible {
+  color: var(--fg-faint-hover);
+}
+
+.mas a:focus-visible {
+  outline: 1px solid var(--fg-faint-hover);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nombre { transition: opacity var(--fade) ease; }
+  #nombre.sale, #nombre.entra { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<main>
+  <h1 id="frase"><span id="nombre-caja"><span id="nombre">César,</span></span><span class="fijo" id="fijo">Jesús te ama</span></h1>
+  <p class="sub">Entre todos, Él te eligió a ti para un plan especial. Tu vida tiene propósito.</p>
+</main>
+
+<p class="mas"><a href="https://jesusvive.mx" target="_blank" rel="noopener noreferrer">¿Quieres saber más sobre lo que hizo por ti? Haz click aquí.</a></p>
+
+<script>
+(function () {
+  var nombres = ["José","Juan","Miguel","Luis","Carlos","Jorge","Francisco","Pedro","Antonio","Manuel","Alejandro","Ricardo","Fernando","Roberto","Eduardo","Javier","Sergio","Raúl","Arturo","Diego","Daniel","Rafael","Ángel","Gerardo","Gabriel","Enrique","Salvador","Óscar","Mario","Alberto","César","Iván","Emilio","Adrián","Rubén","Hugo","Marco","Ignacio","Víctor","Guillermo","María","Guadalupe","Rosa","Ana","Verónica","Patricia","Leticia","Alejandra","Adriana","Elizabeth","Claudia","Laura","Silvia","Martha","Gabriela","Sandra","Karla","Mónica","Beatriz","Andrea","Fernanda","Daniela","Valeria","Paola","Diana","Cecilia","Teresa","Angélica","Yolanda","Norma","Araceli","Perla","Lucía","Carmen","Isabel","Sofía","Camila","Ximena","Regina","Renata","Jesús","Julio","Emmanuel","Alfonso","Tomás","Felipe","Israel","Omar","Erick","Cristian","Alexis","Brandon","Kevin","Axel","Ian","Santiago","Mateo","Sebastián","Leonardo","Emiliano","Fátima","Itzel","Jimena","Montserrat","Brenda","Nayeli","Alondra","Karina","Cynthia"];
+
+  var el = document.getElementById("nombre");
+  var caja = document.getElementById("nombre-caja");
+  var frase = document.getElementById("frase");
+  var fijo = document.getElementById("fijo");
+  var contenedor = document.querySelector("main");
+  var FADE_MS = 900;
+
+  function texto(n) { return n + ","; }
+
+  var indice = Math.floor(Math.random() * nombres.length);
+  el.textContent = texto(nombres[indice]);
+
+  /* Mide el nombre más ancho para reservar su espacio y dejar fija la frase. */
+  var medidor = document.createElement("span");
+  medidor.className = "medidor";
+  frase.appendChild(medidor);
+
+  function ajustar() {
+    var max = 0, suma = 0;
+    for (var i = 0; i < nombres.length; i++) {
+      medidor.textContent = texto(nombres[i]);
+      var w = medidor.getBoundingClientRect().width;
+      suma += w;
+      if (w > max) max = w;
+    }
+    max = Math.ceil(max) + 2;
+    /* La caja mide el ancho promedio; los nombres más largos sobresalen hacia la izquierda. */
+    var ancho = Math.ceil(suma / nombres.length) + 2;
+    var gap = parseFloat(getComputedStyle(frase).columnGap) || 0;
+    var fijoAncho = fijo.getBoundingClientRect().width;
+    var cabe = ancho + gap + fijoAncho + 2 * (max - ancho) <= contenedor.clientWidth;
+    frase.classList.toggle("apilado", !cabe);
+    caja.style.setProperty("--name-w", ancho + "px");
+  }
+
+  ajustar();
+  window.addEventListener("resize", ajustar);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustar);
+
+  function espera() {
+    return 5000 + Math.random() * 3000;
+  }
+
+  function cambiar() {
+    el.classList.add("sale");
+    setTimeout(function () {
+      indice = (indice + 1) % nombres.length;
+      el.textContent = texto(nombres[indice]);
+      el.classList.remove("sale");
+      el.classList.add("entra");
+      void el.offsetWidth;
+      el.classList.remove("entra");
+      setTimeout(cambiar, espera());
+    }, FADE_MS);
+  }
+
+  setTimeout(cambiar, espera());
+})();
+</script>
+</body>
+</html>
