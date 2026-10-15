@@ -180,6 +180,31 @@ h1.apilado #nombre-caja {
 (function () {
   var nombres = ["José","Juan","Miguel","Luis","Carlos","Jorge","Francisco","Pedro","Antonio","Manuel","Alejandro","Ricardo","Fernando","Roberto","Eduardo","Javier","Sergio","Raúl","Arturo","Diego","Daniel","Rafael","Ángel","Gerardo","Gabriel","Enrique","Salvador","Óscar","Mario","Alberto","César","Iván","Emilio","Adrián","Rubén","Hugo","Marco","Ignacio","Víctor","Guillermo","María","Guadalupe","Rosa","Ana","Verónica","Patricia","Leticia","Alejandra","Adriana","Elizabeth","Claudia","Laura","Silvia","Martha","Gabriela","Sandra","Karla","Mónica","Beatriz","Andrea","Fernanda","Daniela","Valeria","Paola","Diana","Cecilia","Teresa","Angélica","Yolanda","Norma","Araceli","Perla","Lucía","Carmen","Isabel","Sofía","Camila","Ximena","Regina","Renata","Jesús","Julio","Emmanuel","Alfonso","Tomás","Felipe","Israel","Omar","Erick","Cristian","Alexis","Brandon","Kevin","Axel","Ian","Santiago","Mateo","Sebastián","Leonardo","Emiliano","Fátima","Itzel","Jimena","Montserrat","Brenda","Nayeli","Alondra","Karina","Cynthia"];
 
+  /* Orden aleatorio, pero nunca más de dos nombres seguidos del mismo género. */
+  var hombres = ["José","Juan","Miguel","Luis","Carlos","Jorge","Francisco","Pedro","Antonio","Manuel","Alejandro","Ricardo","Fernando","Roberto","Eduardo","Javier","Sergio","Raúl","Arturo","Diego","Daniel","Rafael","Ángel","Gerardo","Gabriel","Enrique","Salvador","Óscar","Mario","Alberto","César","Iván","Emilio","Adrián","Rubén","Hugo","Marco","Ignacio","Víctor","Guillermo","Jesús","Julio","Emmanuel","Alfonso","Tomás","Felipe","Israel","Omar","Erick","Cristian","Alexis","Brandon","Kevin","Axel","Ian","Santiago","Mateo","Sebastián","Leonardo","Emiliano"];
+  var mujeres = nombres.filter(function (n) { return hombres.indexOf(n) === -1; });
+  var cola = { h: [], m: [] };
+  var ultimo = "";
+  var racha = 0;
+
+  function mezclar(lista) {
+    var a = lista.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function siguiente() {
+    var tipo = Math.random() < hombres.length / nombres.length ? "h" : "m";
+    if (racha >= 2 && tipo === ultimo) tipo = tipo === "h" ? "m" : "h";
+    racha = tipo === ultimo ? racha + 1 : 1;
+    ultimo = tipo;
+    if (!cola[tipo].length) cola[tipo] = mezclar(tipo === "h" ? hombres : mujeres);
+    return cola[tipo].pop();
+  }
+
   var el = document.getElementById("nombre");
   var caja = document.getElementById("nombre-caja");
   var frase = document.getElementById("frase");
@@ -189,8 +214,7 @@ h1.apilado #nombre-caja {
 
   function texto(n) { return n + ","; }
 
-  var indice = Math.floor(Math.random() * nombres.length);
-  el.textContent = texto(nombres[indice]);
+  el.textContent = texto(siguiente());
 
   /* Mide el nombre más ancho para reservar su espacio y dejar fija la frase. */
   var medidor = document.createElement("span");
@@ -226,8 +250,7 @@ h1.apilado #nombre-caja {
   function cambiar() {
     el.classList.add("sale");
     setTimeout(function () {
-      indice = (indice + 1) % nombres.length;
-      el.textContent = texto(nombres[indice]);
+      el.textContent = texto(siguiente());
       el.classList.remove("sale");
       el.classList.add("entra");
       void el.offsetWidth;
